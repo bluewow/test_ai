@@ -1,0 +1,10 @@
+selenium
+langchain
+openai
+docarray
+streamlit
+unstructured
+faiss-cpu
+tiktoken
+python-dotenv
+beautifulsoup4
