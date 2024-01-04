@@ -1,5 +1,6 @@
 import streamlit as st
 from login import login
+from component import login_component
 
 # 사이드바 생성
 sidebar = st.sidebar
@@ -16,8 +17,4 @@ step3 = st.text_area("step3 기대값 매칭", "", height=100)
 
 # 사이드바에 버튼 추가
 if sidebar.button('버튼 클릭'):
-    
-    login()
-    
-    # 하드코딩
-    # move_test_position()
+    login_component()
