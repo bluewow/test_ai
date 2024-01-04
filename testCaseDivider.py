@@ -33,5 +33,6 @@ def testCaseDivide(test_case):
         action = []
         
     # # 결과 출력
-    for case in results:
-        print(f"Target: {case.target}, Action: {case.action}")
+    # for case in results:
+    #     print(f"Target: {case.target}, Action: {case.action}")
+    return results    

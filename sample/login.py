@@ -1,5 +1,5 @@
 from selenium import webdriver
-from retrieval import rag
+from sample.retrieval import rag
 
 # 로그인
 def login():

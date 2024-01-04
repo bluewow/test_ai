@@ -1,7 +1,8 @@
 import streamlit as st
-from login import login
+from sample.login import login
 from component import login_component
-from testCase import testCaseDivide
+from testCaseDivider import testCaseDivide
+from bridgeModel import conectCaseAndModel
 
 # 사이드바 생성
 sidebar = st.sidebar
@@ -19,5 +20,10 @@ st.header("디버깅")
 
 # 사이드바에 버튼 추가
 if sidebar.button('버튼 클릭'):
-    testCaseDivide(test_case)
+    cases = testCaseDivide(test_case)
+    for case in cases:
+        print(case.target, case.action)
+        conectCaseAndModel(case)
+    
+    
     
