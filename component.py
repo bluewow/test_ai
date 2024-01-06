@@ -30,20 +30,19 @@ def login_component():
     global driver
     global max_retries 
     global retry_count 
-    # 웹드라이버 초기화 (여기서는 Chrome을 예로 들었습니다)
-    driver.get("https://m5-dev.matamath.net/demo.hs/login")
-    driver.execute_script("window.localStorage.clear();")
-    time.sleep(1)
-   
-    body = get_html_body(driver)
     
     while retry_count < max_retries:
         try:
+            driver.get("https://m5-dev.matamath.net/demo.hs/login")
+            driver.execute_script("window.localStorage.clear();")
+            time.sleep(0.5)
+            body = get_html_body(driver)
             chat_prompt = ChatPromptTemplate.from_template(
                 """로그인을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
                 키값은 아래와 같아
                 id_element, password_element, login_button_element
-                각 키의 값은 selenium 4.3.0 버전의 코드야. 특수문자 escape 조심하고
+                각 키의 값은 selenium 4.3.0 버전의 코드야. 
+                특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
                 """
             )
             chain = chat_prompt | chatModel | SimpleJsonOutputParser()
@@ -70,15 +69,15 @@ def logout_component():
     global max_retries 
     global retry_count 
     
-    body = get_html_body(driver)
-    
     while retry_count < max_retries:
         try:
+            body = get_html_body(driver)
             chat_prompt = ChatPromptTemplate.from_template(
                 """로그아웃을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
                 키값은 아래와 같아
                 logout_element
-                각 키의 값은 selenium 4.3.0 버전의 코드야. 특수문자 escape 조심하고
+                각 키의 값은 selenium 4.3.0 버전의 코드야.
+                특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
                 """
             )
             
