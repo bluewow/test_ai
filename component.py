@@ -25,73 +25,64 @@ def get_html_body(driver):
     # body 태그의 내용을 추출합니다.
     return soup.body
     
-
-def login_component():
-    global driver
-    global max_retries 
-    global retry_count 
-    
+def execute_with_retry(action, max_retries=3, retry_interval=0.5):
+    """ 에러 발생 시 재시도를 수행하는 함수 """
+    retry_count = 0
     while retry_count < max_retries:
         try:
-            driver.get("https://m5-dev.matamath.net/demo.hs/login")
-            driver.execute_script("window.localStorage.clear();")
-            time.sleep(0.5)
-            body = get_html_body(driver)
-            chat_prompt = ChatPromptTemplate.from_template(
-                """로그인을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
-                키값은 아래와 같아
-                id_element, password_element, login_button_element
-                각 키의 값은 selenium 4.3.0 버전의 코드야. 
-                특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
-                """
-            )
-            chain = chat_prompt | chatModel | SimpleJsonOutputParser()
-            json = chain.invoke({"body": body})
-            print(json)
-            
-            id_input = eval(json["id_element"])
-            password_input = eval(json["password_element"])
-            login_button = eval(json["login_button_element"])
-            
-            # 사용자 ID와 비밀번호를 입력 필드에 넣습니다.
-            id_input.send_keys("demo")
-            password_input.send_keys("1234")
-            login_button.click()
-            retry_count = 0
-            break
+            action()  # 주어진 작업 실행
+            return  # 성공 시 함수 종료
         except Exception as e:
             print(f"에러 발생: {e}", retry_count)
             retry_count += 1
-            time.sleep(0.5)  # 재시도 사이에 간단한 대기 시간
+            time.sleep(retry_interval)
 
-def logout_component():
+    
+def login_action():
     global driver
-    global max_retries 
-    global retry_count 
+
+    driver.get("https://m5-dev.matamath.net/demo.hs/login")
+    driver.execute_script("window.localStorage.clear();")
+    time.sleep(0.5)
+    body = get_html_body(driver)
+    chat_prompt = ChatPromptTemplate.from_template(
+        """로그인을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
+        키값은 아래와 같아
+        id_element, password_element, login_button_element
+        각 키의 값은 selenium 4.3.0 버전의 코드야. 
+        특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
+        """
+    )
+    chain = chat_prompt | chatModel | SimpleJsonOutputParser()
+    json = chain.invoke({"body": body})
+    print(json)
     
-    while retry_count < max_retries:
-        try:
-            body = get_html_body(driver)
-            chat_prompt = ChatPromptTemplate.from_template(
-                """로그아웃을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
-                키값은 아래와 같아
-                logout_element
-                각 키의 값은 selenium 4.3.0 버전의 코드야.
-                특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
-                """
-            )
-            
-            chain = chat_prompt | chatModel | SimpleJsonOutputParser()
-            json = chain.invoke({"body": body})
-            print('json', json)
+    id_input = eval(json["id_element"])
+    password_input = eval(json["password_element"])
+    login_button = eval(json["login_button_element"])
     
-            logout_element = eval(json["logout_element"])
-            logout_element.click()
-            break
-        except Exception as e:
-            print(f"에러 발생: {e}", retry_count)
-            retry_count += 1
-            time.sleep(0.5)  # 재시도 사이에 간단한 대기 시간
+    # 사용자 ID와 비밀번호를 입력 필드에 넣습니다.
+    id_input.send_keys("demo")
+    password_input.send_keys("1234")
+    login_button.click()
+    retry_count = 0
+                
+def logout_action():
+    global driver
     
+    body = get_html_body(driver)
+    chat_prompt = ChatPromptTemplate.from_template(
+        """로그아웃을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
+        키값은 아래와 같아
+        logout_element
+        각 키의 값은 selenium 4.3.0 버전의 코드야.
+        특수문자 escape 조심하고 comma 나 json 문법에 신경써줘
+        """
+    )
     
- 
+    chain = chat_prompt | chatModel | SimpleJsonOutputParser()
+    json = chain.invoke({"body": body})
+    print('json', json)
+
+    logout_element = eval(json["logout_element"])
+    logout_element.click()
