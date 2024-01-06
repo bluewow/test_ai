@@ -4,6 +4,7 @@ from testCaseDivider import testCaseDivide
 from bridgeModel import conectCaseAndModel
 from component import init_driver
 import pandas as pd
+import time
 
 # 상단의 단일 텍스트 박스 추가
 st.header("테스트 봇")
@@ -83,8 +84,9 @@ if st.button("TEST"):
         for test_case in selected_test_cases:
             cases = testCaseDivide(test_case)
             for case in cases:
-                print('3', case.target, case.action)
+                print('-----', case.target, case.action, '-----')
                 conectCaseAndModel(case)
+                time.sleep(0.3)
     else:
         st.write("선택한 테스트 시나리오에 대한 데이터가 없습니다.")
     
