@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 
 chatModel = ChatOpenAI(temperature=0.1, max_tokens=2048, model_name='gpt-3.5-turbo-16k')
 
-def login_component():
+def sample_login_component():
     # 웹드라이버 초기화 (여기서는 Chrome을 예로 들었습니다)
     driver = webdriver.Chrome()
 

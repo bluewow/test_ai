@@ -11,27 +11,33 @@ from selenium.webdriver.common.by import By
 
 chatModel = ChatOpenAI(temperature=0.1, max_tokens=2048, model_name='gpt-3.5-turbo-16k')
 
-def login_component():
-    # 웹드라이버 초기화 (여기서는 Chrome을 예로 들었습니다)
+driver = None
+
+def init_driver():
+    global driver
     driver = webdriver.Chrome()
 
-    driver.get('https://m5-dev.matamath.net')
-    # localCache clear
-    driver.execute_script("window.localStorage.clear();")
-    
-    driver.get("https://m5-dev.matamath.net/demo.hs/login")
-    time.sleep(1)
+def get_html_body(driver):
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
 
     # body 태그의 내용을 추출합니다.
-    body = soup.body
+    return soup.body
+    
 
+def login_component():
+    global driver
+    # 웹드라이버 초기화 (여기서는 Chrome을 예로 들었습니다)
+    driver.get("https://m5-dev.matamath.net/demo.hs/login")
+    driver.execute_script("window.localStorage.clear();")
+    time.sleep(1)
+   
+    body = get_html_body(driver)
     chat_prompt = ChatPromptTemplate.from_template(
         """로그인을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
         키값은 아래와 같아
         id_element, password_element, login_button_element
-        각 키의 값은 selenium 4.3.0 버전의 코드야
+        각 키의 값은 selenium 4.3.0 버전의 코드야. 특수문자 escape 조심하고
         """
     )
     chain = chat_prompt | chatModel | SimpleJsonOutputParser()
@@ -45,7 +51,24 @@ def login_component():
     # # 사용자 ID와 비밀번호를 입력 필드에 넣습니다.
     id_input.send_keys("demo")
     password_input.send_keys("1234")
-    time.sleep(5)
-    # # 로그인 버튼 클릭
     login_button.click()
-    time.sleep(5)
+
+def logout_component():
+    global driver
+   
+    body = get_html_body(driver)
+    chat_prompt = ChatPromptTemplate.from_template(
+        """로그아웃을 해야하고 해당 {body} 를 분석하여 json 포맷으로 출력을 원해. 
+        키값은 아래와 같아
+        logout_element
+        각 키의 값은 selenium 4.3.0 버전의 코드야. 특수문자 escape 조심하고
+        """
+    )
+    chain = chat_prompt | chatModel | SimpleJsonOutputParser()
+    json = chain.invoke({"body": body})
+    print(json)
+    
+    logout_element = eval(json["logout_element"])
+    
+    # # 사용자 ID와 비밀번호를 입력 필드에 넣습니다.
+    logout_element.click()
