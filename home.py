@@ -73,12 +73,12 @@ else:
 test_scenario = "로그인"
 expected_value = "선생님 홈화면으로 이동"
 
-if st.button("TEST"):
+if st.button("테스트 시작"):
     # 사용자가 선택한 시나리오에 대한 데이터 검색
     if selected_scenario in test_data:
         selected_test_cases = test_data[selected_scenario]["테스트 케이스"]
         selected_expected_values = test_data[selected_scenario]["기대값"]
-        print(selected_test_cases)
+        print('start : ', selected_test_cases)
 
         init_driver()
         for test_case in selected_test_cases:
@@ -86,7 +86,7 @@ if st.button("TEST"):
             for case in cases:
                 print('-----', case.target, case.action, '-----')
                 conectCaseAndModel(case)
-                time.sleep(0.3)
+                time.sleep(3)
     else:
         st.write("선택한 테스트 시나리오에 대한 데이터가 없습니다.")
     
