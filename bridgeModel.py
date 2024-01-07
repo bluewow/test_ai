@@ -9,11 +9,8 @@ def conectCaseAndModel(case):
             execute_with_retry(login_event)
         elif case.action == "로그아웃":
             execute_with_retry(logout_event)
-        elif case.action == "클릭":
-            execute_with_retry(click_event(case.target))
-        elif case.action == "선택":
-            # 선택에 대한 동작 수행
-            pass
+        elif case.action == "클릭" or case.action == "선택":
+            execute_with_retry(click_event, case.target) 
         elif case.action == "체크":
             # 체크에 대한 동작 수행
             pass
