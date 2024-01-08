@@ -120,7 +120,7 @@ def click_event(target, count):
     
     body = get_html_body(driver)
     text = None
-    
+    print(target)
     if count == 0:
         text = """클릭을 해야하고 해당 {body} 를 분석하여 {target} element 르 찾아줘
         json 포맷으로 출력을 원해. 
@@ -151,11 +151,16 @@ def click_event(target, count):
     chain = chat_prompt | chatModel | SimpleJsonOutputParser()
     json = chain.invoke({"body": body, "target": target})
     print('json', json)
-    
+      
+    if (target == ' 학년/교과반 placeholder '):
+        driver.find_element(By.ID, "react-select-학년/교과반-placeholder").click()
+        return
+    if (target == ' 1학년 1반 '):
+        print('1학년-------------')
+        driver.find_element(By.NAME, "1학년 1반").click()
+        return    
+        
     click_element = eval(json["click_element"])
     driver.execute_script("arguments[0].click();", click_element)
-
     # click_element.send_keys(Keys.ENTER)
     # click_element.click()
-    
-    

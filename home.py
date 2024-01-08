@@ -21,9 +21,10 @@ test_data = {
             # "학습범위 선택화면 체크",
             "중1(상) 선택 > 다음 버튼 클릭",
             "2강 소인수분해 선택 > 다음 버튼 클릭", 
-            "2023 학년도 선택 > 1학년 선택 > 1학년 1반 선택 > 다음 버튼 클릭", 
+            # "2023 학년도 선택 > 1학년 선택 > 1학년 1반 선택 > 다음 버튼 클릭", 
+            "2023 학년도 선택 > 학년/교과반 placeholder 선택 > 1학년 선택 > 1학년 1반 선택 > 다음 버튼 클릭", 
             "치료학습지 1회 선택 > 완료 버튼 클릭", 
-            "나의 수업 보기 > [마타와 연산학습]중1(상) 선택"
+            "나의 수업 보기 클릭 > [마타와 연산학습]중1(상) 선택"
         ],
         "기대값": [
             "학습범위 선택 화면으로 이동",
@@ -84,6 +85,10 @@ if st.button("테스트 시작"):
         for test_case in selected_test_cases:
             cases = testCaseDivide(test_case)
             for case in cases:
+                print('!!!', case.target)
+                if (case.target == '나의 수업 보기 '):
+                    time.sleep(5)
+                    
                 print('-----', case.target, case.action, '-----')
                 conectCaseAndModel(case)
                 time.sleep(1.5)
