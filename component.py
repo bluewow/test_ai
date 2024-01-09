@@ -93,7 +93,7 @@ def login_event():
     # 사용자 ID와 비밀번호를 입력 필드에 넣습니다.
     id_input.send_keys("demo")
     password_input.send_keys("1234")
-    login_button.click()
+    driver.execute_script("arguments[0].click();", login_button)
                 
 def logout_event():
     global driver
@@ -113,7 +113,7 @@ def logout_event():
     print('json', json)
 
     logout_element = eval(json["logout_element"])
-    logout_element.click()
+    driver.execute_script("arguments[0].click();", logout_element)
     
 def click_event(target, count):
     global driver
